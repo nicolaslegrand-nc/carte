@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Saisie carte communes — 28 juin 2026</title>
+<style>
+*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;margin:0;padding:0}
+body{background:#f0f4fa;padding:20px;color:#222}
+h1{color:#1a4dbf;font-size:1.35rem;margin-bottom:4px}
+.subtitle{color:#888;font-size:.8rem;margin-bottom:20px}
+
+.github-section{background:#24292e;border-radius:12px;padding:18px;margin-bottom:16px;color:#fff}
+.github-section h2{color:#fff;font-size:.95rem;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #444}
+.github-section .field label{color:#aaa}
+.github-section .field input{background:#1a1f24;color:#fff;border-color:#444}
+.github-section .field input:focus{border-color:#58a6ff}
+.github-section .hint{color:#777}
+.token-saved{color:#3fb950;font-size:.75rem;margin-top:4px;font-weight:700}
+.row-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+@media(max-width:700px){.row-4{grid-template-columns:1fr 1fr}}
+
+.field label{display:block;font-size:.72rem;font-weight:700;color:#555;margin-bottom:4px}
+.field input,.field select{width:100%;padding:8px 11px;border:2px solid #d0d8f0;border-radius:6px;font-size:.9rem;background:#fff;transition:border .15s}
+.field input:focus,.field select:focus{outline:none;border-color:#1a4dbf}
+.hint{font-size:.7rem;color:#aaa;margin-top:3px}
+
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tab-btn{padding:9px 18px;border:2px solid #1a4dbf;border-radius:8px;background:#fff;color:#1a4dbf;font-weight:700;cursor:pointer;font-size:.85rem;transition:.15s}
+.tab-btn.active{background:#1a4dbf;color:#fff}
+.tab-btn:hover:not(.active){background:#e8eeff}
+.panel{display:none}.panel.active{display:block}
+
+.section{background:#fff;border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.sel-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:6px}
+.sel-row .field{flex:1;min-width:200px}
+.prog{font-size:.78rem;color:#666;background:#f1f5ff;border:1px solid #d6e0fb;border-radius:20px;padding:6px 13px;font-weight:700;white-space:nowrap}
+.prog b{color:#1a4dbf}
+.navbtn{padding:9px 14px;border:1px solid #d0d8f0;border-radius:7px;background:#fff;color:#1a4dbf;font-weight:700;cursor:pointer;font-size:.82rem}
+.navbtn:hover{background:#eef3ff}
+
+.cube{display:inline-block;width:9px;height:9px;border-radius:2px;background:#cdd6ea;margin:1px}
+.cube.done{background:#1a9e4a}
+.cubes{margin-top:10px;line-height:1}
+
+.commune-title{font-size:1.15rem;font-weight:800;color:#1a4dbf;margin:4px 0 14px;display:flex;align-items:center;gap:10px}
+.commune-title .pv{font-size:.66rem;color:#fff;padding:2px 9px;border-radius:20px;font-weight:700}
+.row-4b{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:700px){.row-4b{grid-template-columns:1fr 1fr}}
+
+table{width:100%;border-collapse:collapse}
+thead th{font-size:.7rem;font-weight:700;color:#888;text-align:left;padding:6px 8px;border-bottom:2px solid #e5e7eb;background:#f8faff}
+thead th.right{text-align:right}
+tbody tr{border-bottom:1px solid #f2f2f2}
+tbody td{padding:5px 8px;vertical-align:middle}
+.color-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:7px;flex-shrink:0}
+.liste-nom{font-size:.82rem;font-weight:600}
+.liste-head{font-size:.68rem;color:#aaa}
+.voix-input{width:110px;padding:5px 8px;border:1.5px solid #d0d8f0;border-radius:5px;font-size:.9rem;text-align:right}
+.voix-input:focus{outline:none;border-color:#1a4dbf}
+
+.stat-line{margin-top:12px;font-size:.85rem;font-weight:700;color:#1a4dbf}
+.alert{padding:9px 13px;border-radius:8px;margin-top:10px;font-size:.82rem;font-weight:600}
+.alert.warn{background:#fffbeb;color:#92400e;border:1px solid #f59e0b}
+.alert.ok{background:#f0faf4;color:#166534;border:1px solid #1a9e4a}
+.alert.error{background:#fff0f0;color:#991b1b;border:1px solid #e82020}
+.alert.info{background:#eff6ff;color:#1e40af;border:1px solid #93c5fd}
+
+.pub-section{background:#1a4dbf;border-radius:12px;padding:22px;color:#fff;margin-top:22px}
+.pub-section h2{color:#fff;border-bottom:2px solid rgba(255,255,255,.2);padding-bottom:10px;margin-bottom:14px;font-size:1rem}
+.pub-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn{padding:12px 20px;border:none;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:8px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-publish{background:#1a9e4a;color:#fff;font-size:1rem;padding:14px 26px}
+.btn-publish:hover:not(:disabled){background:#158a3e}
+.progress{margin-top:14px}
+.prog-step{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.85rem;color:rgba(255,255,255,.7)}
+.prog-step.done{color:#3fb950}.prog-step.running{color:#fff;font-weight:700}.prog-step.error-step{color:#f85149}
+.prog-icon{font-size:1rem;width:20px;text-align:center}
+.spinner{display:inline-block;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.last-pub{font-size:.85rem;color:#bff5cf;font-weight:600;margin-bottom:8px;display:none}
+</style>
+</head>
+<body>
+
+<h1>🗺️ Saisie carte — résultats par commune</h1>
+<p class="subtitle">Radio Rythme Bleu · 28 juin 2026 · alimente la carte des communes</p>
+
+<div class="github-section">
+  <h2>🔑 Configuration GitHub</h2>
+  <div class="row-4">
+    <div class="field"><label>Utilisateur</label><input type="text" id="gh-user" value="nicolaslegrand-nc"></div>
+    <div class="field"><label>Repo de la carte</label><input type="text" id="gh-repo" value="Carte"></div>
+    <div class="field"><label>Fichier</label><input type="text" id="gh-file" value="carte_communes_RRB.html"></div>
+    <div class="field"><label>Token (PAT classic, scope repo)</label><input type="password" id="gh-token" placeholder="ghp_…" oninput="saveToken()"></div>
+  </div>
+  <div class="token-saved" id="token-status" style="display:none">✓ Token enregistré</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('sud',this)">🔵 Province Sud</button>
+  <button class="tab-btn" onclick="switchTab('nord',this)">🔴 Province Nord</button>
+  <button class="tab-btn" onclick="switchTab('iles',this)">🟢 Îles Loyauté</button>
+</div>
+
+<div class="panel active" id="panel-sud"></div>
+<div class="panel" id="panel-nord"></div>
+<div class="panel" id="panel-iles"></div>
+
+<div class="pub-section">
+  <h2>🚀 Publier sur la carte</h2>
+  <div class="last-pub" id="last-pub"></div>
+  <div id="alerts-pub"></div>
+  <div class="pub-btns">
+    <button class="btn btn-publish" id="btn-publish" onclick="publier()">🚀 Publier les résultats sur la carte</button>
+    <button class="btn" onclick="loadPublished(true)" style="background:#fff;color:#1a4dbf;border:1px solid #9bb8e8">↻ Recharger les valeurs publiées</button>
+    <button class="btn" onclick="resetTout()" style="background:#fff;color:#c0392b;border:1px solid #e0a0a0">🗑️ Tout réinitialiser</button>
+  </div>
+  <div class="progress" id="progress" style="display:none"></div>
+</div>
+
+<script>
+/* ===================== DONNÉES ===================== */
+var ENTITES = [
+ {code:'98802',nom:'Boulouparis',prov:'sud'},{code:'98803',nom:'Bourail',prov:'sud'},
+ {code:'98805',nom:'Dumbéa',prov:'sud'},{code:'98806',nom:'Farino',prov:'sud'},
+ {code:'98809',nom:'Île des Pins',prov:'sud'},{code:'98813',nom:'La Foa',prov:'sud'},
+ {code:'98816',nom:'Moindou',prov:'sud'},{code:'98817',nom:'Mont-Dore',prov:'sud'},
+ {code:'98818',nom:'Nouméa',prov:'sud'},{code:'98821',nom:'Païta',prov:'sud'},
+ {code:'98827S',nom:'Poya (Sud)',prov:'sud'},{code:'98828',nom:'Sarraméa',prov:'sud'},
+ {code:'98829',nom:'Thio',prov:'sud'},{code:'98832',nom:'Yaté',prov:'sud'},
+ {code:'98801',nom:'Bélep',prov:'nord'},{code:'98804',nom:'Canala',prov:'nord'},
+ {code:'98807',nom:'Hienghène',prov:'nord'},{code:'98808',nom:'Houaïlou',prov:'nord'},
+ {code:'98810',nom:'Kaala-Gomen',prov:'nord'},{code:'98811',nom:'Koné',prov:'nord'},
+ {code:'98833',nom:'Kouaoua',prov:'nord'},{code:'98812',nom:'Koumac',prov:'nord'},
+ {code:'98819',nom:'Ouégoa',prov:'nord'},{code:'98822',nom:'Poindimié',prov:'nord'},
+ {code:'98823',nom:'Ponérihouen',prov:'nord'},{code:'98825',nom:'Pouembout',prov:'nord'},
+ {code:'98826',nom:'Poum',prov:'nord'},{code:'98824',nom:'Pouébo',prov:'nord'},
+ {code:'98827N',nom:'Poya (Nord)',prov:'nord'},{code:'98830',nom:'Touho',prov:'nord'},
+ {code:'98831',nom:'Voh',prov:'nord'},
+ {code:'98814',nom:'Lifou',prov:'iles'},{code:'98815',nom:'Maré',prov:'iles'},
+ {code:'98820',nom:'Ouvéa',prov:'iles'}
+];
+var LISTES = {
+  sud:[
+    {nom:"Les Loyalistes - le Rassemblement",head:"Sonia BACKÈS",color:"#1a4dbf"},
+    {nom:"Nous, Réunis !",head:"Philippe DUNOYER",color:"#4eace7"},
+    {nom:"Un espoir pour demain",head:"Pascal LAFLEUR",color:"#e82020"},
+    {nom:"Pour une Calédonie française",head:"Arnold LÈQUES",color:"#0099cc"},
+    {nom:"Unis pour le pays",head:"Louis MAPOU",color:"#1a9e4a"},
+    {nom:"France-Calédonie : une patrie",head:"Alain DESCOMBELS",color:"#15406b"},
+    {nom:"Kanaky pour tous",head:"Johanito WAMYTAN",color:"#eab308"},
+    {nom:"Faire Pays",head:"Robert KAKUE",color:"#f57c00"},
+    {nom:"Souveraineté Kanaky NC",head:"Dominique CHAZAL",color:"#95297c"},
+    {nom:"Une province pour tous",head:"Walles KOTRA",color:"#ecd9a8"},
+    {nom:"Un autre monde est possible !",head:"Milakulo TUKUMULI",color:"#fa8072"}
+  ],
+  nord:[
+    {nom:"UC-FLNKS",head:"Pascal SAWA",color:"#1a9e4a"},
+    {nom:"UNI",head:"Paul NÉAOUTYINE",color:"#eab308"},
+    {nom:"Alternative Nord pour un pays souverain",head:"Eugène MENREMPON",color:"#e82020"},
+    {nom:"Faire Pays",head:"Maurice WAKA-AWA",color:"#f57c00"},
+    {nom:"Agissons ensemble pour le Nord",head:"Vanessa WACAPO",color:"#1a4dbf"}
+  ],
+  iles:[
+    {nom:"UC-FLNKS Îles",head:"Mickaël FORREST",color:"#1a9e4a"},
+    {nom:"PALIKA Îles",head:"Wali WAHETRA",color:"#eab308"},
+    {nom:"Nation Autochtone",head:"Omayra NAISSELINE",color:"#e82020"},
+    {nom:"Union pour construire dans le consensus",head:"Jacques LALIÉ",color:"#f57c00"},
+    {nom:"S'engager et oeuvrer pour la prospérité",head:"Joann PIDRA",color:"#00ada9"},
+    {nom:"Baselaia",head:"Bilo RAILATI",color:"#021f6d"},
+    {nom:"Un nouveau souffle",head:"Karyl TRENYIWA",color:"#7b3fa0"}
+  ]
+};
+/* Inscrits LESP par commune (clé = code) — source : Statistiques définitives LESP au 22/06/2026. */
+var INSCRITS_COMMUNE = {
+ '98814':10792,'98815':6975,'98820':4327,
+ '98801':941,'98804':3607,'98807':2479,'98808':3694,'98810':1791,'98811':4864,'98833':1194,
+ '98812':2898,'98819':2226,'98822':4283,'98823':2683,'98824':2405,'98825':1738,'98826':1519,
+ '98827N':2295,'98830':1970,'98831':2429,
+ '98802':3072,'98803':4464,'98805':20909,'98806':635,'98809':1856,'98813':3164,'98816':822,
+ '98817':19293,'98818':53671,'98821':14754,'98827S':202,'98828':533,'98829':2277,'98832':1822
+};
+
+var PROVLABEL={sud:'Province Sud',nord:'Province Nord',iles:'Îles Loyauté'};
+var PROVCOL={sud:'#1a4dbf',nord:'#e82020',iles:'#1a9e4a'};
+
+/* état saisi : DATA[code] = {exp,nul,blc,ins, voix:{nomListe:val}} */
+var DATA = {};
+var CUR = {sud:null,nord:null,iles:null};
+
+/* ===================== UTILS ===================== */
+function utf8ToBase64(str){const b=new TextEncoder().encode(str);let s='';b.forEach(c=>s+=String.fromCharCode(c));return btoa(s);}
+function base64ToUtf8(b64){const bin=atob(b64.replace(/\n/g,''));const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder('utf-8').decode(u);}
+function num(n){return (n||0).toLocaleString('fr-FR');}
+function entOf(code){return ENTITES.find(e=>e.code===code);}
+function listOf(prov){return LISTES[prov];}
+
+/* ===================== TOKEN ===================== */
+function saveToken(){const t=document.getElementById('gh-token').value.trim();if(t.length>10){localStorage.setItem('gh_rrb_token',t);document.getElementById('token-status').style.display='block';}}
+window.addEventListener('load',()=>{const s=localStorage.getItem('gh_rrb_token');if(s){document.getElementById('gh-token').value=s;document.getElementById('token-status').style.display='block';}});
+
+/* ===================== PANELS ===================== */
+function initPanel(prov){
+  const coms=ENTITES.filter(e=>e.prov===prov);
+  const opts=coms.map(e=>`<option value="${e.code}">${e.nom}</option>`).join('');
+  document.getElementById('panel-'+prov).innerHTML=`
+    <div class="section">
+      <div class="sel-row">
+        <div class="field"><label>Commune</label>
+          <select id="sel-${prov}" onchange="selectCommune('${prov}',this.value)">${opts}</select>
+        </div>
+        <button class="navbtn" onclick="navCommune('${prov}',-1)">← Préc.</button>
+        <button class="navbtn" onclick="navCommune('${prov}',1)">Suiv. →</button>
+        <span class="prog" id="prog-${prov}"></span>
+      </div>
+      <div class="cubes" id="cubes-${prov}"></div>
+      <div id="form-${prov}" style="margin-top:14px"></div>
+    </div>`;
+  CUR[prov]=coms[0].code;
+  selectCommune(prov, coms[0].code);
+}
+
+function selectCommune(prov, code){
+  CUR[prov]=code;
+  const sel=document.getElementById('sel-'+prov); if(sel) sel.value=code;
+  renderForm(prov, code);
+}
+function navCommune(prov,dir){
+  const coms=ENTITES.filter(e=>e.prov===prov);
+  let i=coms.findIndex(e=>e.code===CUR[prov]);
+  i=Math.max(0,Math.min(coms.length-1,i+dir));
+  selectCommune(prov, coms[i].code);
+}
+
+function renderForm(prov, code){
+  const e=entOf(code); const listes=listOf(prov);
+  const d=DATA[code]||{voix:{}};
+  const insDefault = (d.ins!==undefined&&d.ins!=='')?d.ins : (INSCRITS_COMMUNE[code]!==undefined?INSCRITS_COMMUNE[code]:'');
+  const rows=listes.map((l,i)=>`
+    <tr>
+      <td><div style="display:flex;align-items:center">
+        <span class="color-dot" style="background:${l.color}"></span>
+        <div><div class="liste-nom">${l.nom}</div><div class="liste-head">${l.head}</div></div>
+      </div></td>
+      <td style="text-align:right">
+        <input type="number" class="voix-input" id="vx-${i}" min="0" placeholder="0"
+          value="${d.voix&&d.voix[l.nom]!==undefined?d.voix[l.nom]:''}" oninput="onInput('${prov}','${code}')">
+      </td>
+    </tr>`).join('');
+  document.getElementById('form-'+prov).innerHTML=`
+    <div class="commune-title">${e.nom}<span class="pv" style="background:${PROVCOL[prov]}">${PROVLABEL[prov]}</span></div>
+    <div class="row-4b">
+      <div class="field"><label>Exprimés</label><input type="number" id="exp" min="0" placeholder="0" value="${d.exp||''}" oninput="onInput('${prov}','${code}')"></div>
+      <div class="field"><label>Nuls</label><input type="number" id="nul" min="0" placeholder="0" value="${d.nul||''}" oninput="onInput('${prov}','${code}')"></div>
+      <div class="field"><label>Blancs</label><input type="number" id="blc" min="0" placeholder="0" value="${d.blc||''}" oninput="onInput('${prov}','${code}')"></div>
+      <div class="field"><label>Inscrits ${INSCRITS_COMMUNE[code]!==undefined?'':'<span style="color:#aaa;font-weight:400">(à remplir)</span>'}</label>
+        <input type="number" id="ins" min="0" placeholder="0" value="${insDefault}" oninput="onInput('${prov}','${code}')"></div>
+    </div>
+    <table>
+      <thead><tr><th>Liste</th><th class="right">Voix</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="stat-line" id="stat-line"></div>
+    <div id="alert-form"></div>`;
+  refreshStat(prov, code);
+  updateProgress(prov);
+}
+
+function readForm(prov, code){
+  const listes=listOf(prov);
+  const g=id=>{const el=document.getElementById(id);return el?el.value:'';};
+  const voix={};
+  listes.forEach((l,i)=>{const v=parseInt(g('vx-'+i));if(!isNaN(v)&&v>0)voix[l.nom]=v;});
+  return {exp:g('exp'),nul:g('nul'),blc:g('blc'),ins:g('ins'),voix:voix};
+}
+
+function onInput(prov, code){
+  DATA[code]=readForm(prov, code);
+  refreshStat(prov, code);
+  updateProgress(prov);
+  saveDraft();
+}
+
+function totalVoix(code){const d=DATA[code];if(!d||!d.voix)return 0;return Object.values(d.voix).reduce((a,b)=>a+b,0);}
+function hasData(code){const d=DATA[code];return d && (totalVoix(code)>0 || (parseInt(d.exp)||0)>0);}
+
+function refreshStat(prov, code){
+  const d=DATA[code]||{}; const tv=totalVoix(code);
+  const exp=parseInt(d.exp)||0, nul=parseInt(d.nul)||0, blc=parseInt(d.blc)||0, ins=parseInt(d.ins)||0;
+  const votants=exp+nul+blc;
+  let html='';
+  if(tv>0||exp>0){
+    html+=`Total voix listes : <b>${num(tv)}</b>`;
+    if(exp>0) html+=` &nbsp;·&nbsp; Exprimés : <b>${num(exp)}</b>`;
+    if(ins>0&&votants>0) html+=` &nbsp;·&nbsp; Participation : <b>${(votants/ins*100).toFixed(2).replace('.',',')} %</b>`;
+  }
+  const sl=document.getElementById('stat-line'); if(sl) sl.innerHTML=html;
+  const al=document.getElementById('alert-form');
+  if(al){
+    if(exp>0&&tv>0&&Math.abs(tv-exp)>exp*0.03)
+      al.innerHTML=`<div class="alert warn">⚠️ Total des voix (${num(tv)}) ≠ Exprimés (${num(exp)}) — à vérifier.</div>`;
+    else if(ins>0&&votants>ins)
+      al.innerHTML=`<div class="alert warn">⚠️ Votants (${num(votants)}) &gt; Inscrits (${num(ins)}) — à vérifier.</div>`;
+    else al.innerHTML='';
+  }
+}
+
+function updateProgress(prov){
+  const coms=ENTITES.filter(e=>e.prov===prov);
+  const done=coms.filter(e=>hasData(e.code)).length;
+  const p=document.getElementById('prog-'+prov);
+  if(p) p.innerHTML=`<b>${done}</b> / ${coms.length} communes`;
+  const cub=document.getElementById('cubes-'+prov);
+  if(cub) cub.innerHTML=coms.map(e=>`<span class="cube ${hasData(e.code)?'done':''}" title="${e.nom}"></span>`).join('');
+}
+
+function switchTab(prov, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+prov).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ===================== CONSTRUIRE VOIX ===================== */
+function buildVOIX(){
+  const out={};
+  ENTITES.forEach(e=>{
+    if(!hasData(e.code)) return;
+    const d=DATA[e.code]; const o={};
+    listOf(e.prov).forEach(l=>{ o[l.nom]=(d.voix&&d.voix[l.nom])||0; });
+    o._exprimes=parseInt(d.exp)||0; o._nuls=parseInt(d.nul)||0;
+    o._blancs=parseInt(d.blc)||0; o._inscrits=parseInt(d.ins)||0;
+    out[e.code]=o;
+  });
+  return out;
+}
+function injectCarte(html, voix){
+  const json=JSON.stringify(voix);
+  html=html.replace(/\/\*@VOIX\*\/[\s\S]*?\/\*@END\*\//, '/*@VOIX*/var VOIX = '+json+';/*@END*/');
+  html=html.replace(/\/\*@DEMO\*\/[\s\S]*?\/\*@END\*\//, '/*@DEMO*/var DONNEES_DEMO = false;/*@END*/');
+  return html;
+}
+
+/* ===================== GITHUB ===================== */
+async function ghGet(token,user,repo,file){
+  const url=`https://api.github.com/repos/${user}/${repo}/contents/${file}`;
+  const c=new AbortController(); const t=setTimeout(()=>c.abort(),15000);
+  let r; try{ r=await fetch(url,{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'},signal:c.signal}); }
+  catch(e){ throw new Error(e.name==='AbortError'?`Connexion trop lente lors de la lecture de ${file}.`:`Pas de réseau (lecture de ${file}).`); }
+  finally{ clearTimeout(t); }
+  if(!r.ok) throw new Error(`Impossible de lire ${file} (${r.status}). Vérifie le repo et le token.`);
+  return r.json();
+}
+async function ghPut(token,user,repo,file,contenu,sha){
+  const url=`https://api.github.com/repos/${user}/${repo}/contents/${file}`;
+  const body={message:`MAJ carte communes ${new Date().toLocaleTimeString('fr-FR')}`,content:utf8ToBase64(contenu),sha:sha};
+  const c=new AbortController(); const t=setTimeout(()=>c.abort(),20000);
+  let r; try{ r=await fetch(url,{method:'PUT',headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body),signal:c.signal}); }
+  catch(e){ throw new Error(e.name==='AbortError'?`Connexion coupée lors de l'écriture — vérifie sur GitHub avant de réessayer.`:`Pas de réseau (écriture de ${file}).`); }
+  finally{ clearTimeout(t); }
+  if(!r.ok){ const er=await r.json(); throw new Error(er.message||`Erreur ${r.status}`); }
+  return r.json();
+}
+
+function addStep(id,icon,text,state=''){const div=document.getElementById('progress');const el=document.createElement('div');el.className='prog-step '+state;el.id='step-'+id;el.innerHTML=`<span class="prog-icon">${icon}</span><span>${text}</span>`;div.appendChild(el);}
+function setStep(id,icon,text,state){const el=document.getElementById('step-'+id);if(el){el.className='prog-step '+state;el.innerHTML=`<span class="prog-icon">${icon}</span><span>${text}</span>`;}}
+
+async function publier(){
+  const token=document.getElementById('gh-token').value.trim();
+  const user=document.getElementById('gh-user').value.trim();
+  const repo=document.getElementById('gh-repo').value.trim();
+  const file=document.getElementById('gh-file').value.trim();
+  const al=document.getElementById('alerts-pub'); al.innerHTML='';
+  if(!token){ al.innerHTML='<div class="alert error">❌ Token GitHub manquant.</div>'; return; }
+
+  const nbDone=ENTITES.filter(e=>hasData(e.code)).length;
+  if(nbDone===0){ al.innerHTML='<div class="alert warn">⚠️ Aucune commune saisie.</div>'; return; }
+
+  const voix=buildVOIX();
+  const btn=document.getElementById('btn-publish'); btn.disabled=true; const old=btn.textContent; btn.textContent='⏳ Publication…';
+  const pg=document.getElementById('progress'); pg.style.display='block'; pg.innerHTML='';
+  addStep('read','⏳',`Lecture de ${file}`); addStep('write','⏳',`Mise à jour de ${file}`);
+  try{
+    setStep('read','<span class="spinner">⏳</span>',`Lecture de ${file}…`,'running');
+    const f=await ghGet(token,user,repo,file);
+    setStep('read','✅',`${file} lu`,'done');
+    setStep('write','<span class="spinner">⏳</span>',`Mise à jour (${nbDone} communes)…`,'running');
+    const html=base64ToUtf8(f.content);
+    if(!/\/\*@VOIX\*\//.test(html)) throw new Error("Le fichier carte ne contient pas le repère d'injection (/*@VOIX*/). Republie la bonne version de la carte.");
+    const neu=injectCarte(html, voix);
+    const res=await ghPut(token,user,repo,file,neu,f.sha);
+    if(!res||!res.content||!res.content.sha) throw new Error("Réponse GitHub incomplète — vérifie sur GitHub.");
+    setStep('write','✅',`${file} publié`,'done');
+    al.innerHTML=`<div class="alert ok">🎉 Carte mise à jour (${nbDone} communes) ! L'iframe se rafraîchit dans 1-2 min.</div>`;
+    localStorage.setItem('rrb_carte_last', new Date().toISOString()); showLast();
+  }catch(err){
+    al.innerHTML=`<div class="alert error">❌ ${err.message}</div>`;
+    document.querySelectorAll('.prog-step.running').forEach(el=>el.className='prog-step error-step');
+  }
+  btn.disabled=false; btn.textContent=old;
+}
+
+/* ===================== PERSISTANCE ===================== */
+const DRAFT='rrb_carte_saisie_v1';
+function saveDraft(){try{localStorage.setItem(DRAFT,JSON.stringify(DATA));}catch(e){}}
+function restoreDraft(){try{const r=localStorage.getItem(DRAFT);if(r){DATA=JSON.parse(r)||{};return true;}}catch(e){}return false;}
+function showLast(){const d=document.getElementById('last-pub');const s=localStorage.getItem('rrb_carte_last');if(!s){d.style.display='none';return;}const dt=new Date(s);d.style.display='block';d.textContent=`✅ Dernière publication : ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;}
+
+function resetTout(){
+  if(!confirm("Vider toute la saisie locale ? (rien n'est touché sur GitHub tant que tu ne republies pas)")) return;
+  DATA={}; saveDraft();
+  ['sud','nord','iles'].forEach(p=>{ renderForm(p,CUR[p]); updateProgress(p); });
+  document.getElementById('alerts-pub').innerHTML='<div class="alert info">🗑️ Saisie locale réinitialisée.</div>';
+}
+
+/* recharger depuis la carte publiée */
+async function fetchPublished(user,repo,file){
+  for(const br of ['main','master']){
+    try{ const r=await fetch(`https://raw.githubusercontent.com/${user}/${repo}/${br}/${file}?t=`+Date.now(),{cache:'no-store'}); if(r.ok) return await r.text(); }catch(e){}
+  }
+  return null;
+}
+async function loadPublished(manuel){
+  const user=document.getElementById('gh-user').value.trim()||'nicolaslegrand-nc';
+  const repo=document.getElementById('gh-repo').value.trim()||'Carte';
+  const file=document.getElementById('gh-file').value.trim()||'carte_communes_RRB.html';
+  const html=await fetchPublished(user,repo,file);
+  if(!html){ if(manuel) alert("Impossible de lire la carte publiée (réseau/CORS)."); return; }
+  const m=html.match(/\/\*@VOIX\*\/var VOIX = ([\s\S]*?);\/\*@END\*\//);
+  if(!m){ if(manuel) alert("Aucune donnée trouvée dans la carte publiée."); return; }
+  let voix; try{ voix=JSON.parse(m[1]); }catch(e){ try{ voix=(new Function('return '+m[1]))(); }catch(e2){ if(manuel) alert("Données illisibles."); return; } }
+  DATA={};
+  Object.keys(voix).forEach(code=>{
+    const e=entOf(code); if(!e) return;
+    const o=voix[code]; const vx={};
+    listOf(e.prov).forEach(l=>{ if(o[l.nom]>0) vx[l.nom]=o[l.nom]; });
+    DATA[code]={exp:o._exprimes||'',nul:o._nuls||'',blc:o._blancs||'',ins:o._inscrits||'',voix:vx};
+  });
+  saveDraft();
+  ['sud','nord','iles'].forEach(p=>{ renderForm(p,CUR[p]); updateProgress(p); });
+  if(manuel) document.getElementById('alerts-pub').innerHTML='<div class="alert info">↻ Valeurs rechargées depuis la carte publiée.</div>';
+}
+
+/* ===================== INIT ===================== */
+restoreDraft();
+['sud','nord','iles'].forEach(initPanel);
+showLast();
+if(Object.keys(DATA).length===0) loadPublished(false);
+document.addEventListener('input',()=>saveDraft());
+window.addEventListener('beforeunload',saveDraft);
+</script>
+</body>
+</html>
