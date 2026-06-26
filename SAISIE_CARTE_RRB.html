@@ -664,7 +664,7 @@ async function loadPublished(manuel){
 restoreDraft();
 ['sud','nord','iles'].forEach(initPanel);
 showLast();
-if(Object.keys(DATA).length===0) loadPublished(false);
+/* Démarrage à vide : pas de chargement automatique. Utiliser le bouton “↻ Recharger les valeurs publiées” au besoin. */
 document.addEventListener('input',()=>saveDraft());
 window.addEventListener('beforeunload',saveDraft);
 </script>
