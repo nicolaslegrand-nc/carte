@@ -7,7 +7,7 @@
 <style>
 :root{--gold:#e8a000;--gold-d:#c47d00;--ink:#15140f;--muted:#8a8576;--bg:#f4f1e8;--topbar:rgba(255,255,255,.85);--card:#ffffff;--chip:#faf8f1;--btn-hover:#fffaf0;--line:#ece2c9;--track:#efece2;--stroke:#ffffff;--sea1:#eef5f8;--sea2:#dbe8ef;--provline:#3a3a3a;--label-halo:#ffffff;--logo-bg:transparent;--logo-pad:0;--shadow:0 14px 36px rgba(120,90,0,.12);--shadow-sm:0 6px 18px rgba(120,90,0,.07)}
 *{box-sizing:border-box}
-#rrb-root{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:0 0 44px;width:100%;margin:0}
+#rrb-root{background:linear-gradient(160deg,#2f5290 0%,#5a86cf 50%,#2f5290 100%);background-attachment:fixed;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:0 0 44px;width:100%;margin:0}
 .rrb-topbar{width:100%;background:var(--topbar);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 20px;backdrop-filter:blur(6px)}
 .logo-chip{background:var(--logo-bg);padding:var(--logo-pad);border-radius:10px;display:inline-flex;align-items:center}
 .rrb-logo{height:44px;width:auto;display:block}
@@ -29,7 +29,7 @@
 .tabs button:hover{color:var(--ink)}
 .tabs button.on{background:#0000CE;color:#fff;box-shadow:0 2px 8px rgba(0,0,206,.32)}
 
-.mapcard{position:relative;border:7px solid transparent;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);padding:8px;background:linear-gradient(165deg,var(--sea1),var(--sea2)) padding-box,linear-gradient(to right,#0a1d5e,#1a4dbf,#5b8fe8,#1a4dbf,#0a1d5e) border-box}
+.mapcard{position:relative;background:linear-gradient(165deg,var(--sea1),var(--sea2));border:1px solid rgba(255,255,255,.45);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);padding:8px}
 svg.mainmap{display:block;width:100%;height:auto;cursor:pointer;overflow:visible}
 .cm{stroke:var(--stroke);stroke-width:.7;cursor:pointer;transition:opacity .4s ease,filter .14s,stroke-width .14s;vector-effect:non-scaling-stroke}
 .cm:hover,.cm.active{stroke:#ffffff;stroke-width:2.6}
@@ -45,7 +45,7 @@ svg.mainmap{display:block;width:100%;height:auto;cursor:pointer;overflow:visible
   .bubble{position:static;width:100%;max-width:none;max-height:none;margin-top:14px;transform:none;box-shadow:var(--shadow-sm)}
   .bubble:not(.show){display:none}
 }
-.hint{font-size:.7rem;color:var(--muted);text-align:center;margin:11px 0 0}
+.hint{font-size:.7rem;color:rgba(255,255,255,.85);text-align:center;margin:11px 0 0}
 .synth{margin:16px 0 0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-sm);cursor:default;user-select:none}
 .synth[hidden]{display:none}
 .lnk{display:inline-flex;align-items:center;gap:6px;margin-top:15px;background:var(--gold);color:#fff;text-decoration:none;font-weight:800;font-size:.76rem;padding:9px 17px;border-radius:30px;box-shadow:0 3px 10px rgba(200,150,0,.3);transition:transform .12s}
@@ -124,7 +124,7 @@ svg.mainmap{display:block;width:100%;height:auto;cursor:pointer;overflow:visible
 .lg-item{display:flex;align-items:center;gap:8px;font-size:.78rem;background:var(--chip);border:1px solid var(--line);padding:5px 11px 5px 8px;border-radius:30px}
 .lg-sw{width:14px;height:14px;border-radius:4px;flex-shrink:0}
 .lg-item b{font-variant-numeric:tabular-nums}
-.rrb-footer{margin:26px 16px 0;font-size:.62rem;color:var(--muted);text-align:center;border-top:1px solid var(--line);padding-top:14px;max-width:1080px;width:100%}
+.rrb-footer{margin:26px 16px 0;font-size:.62rem;color:rgba(255,255,255,.72);text-align:center;border-top:1px solid rgba(255,255,255,.25);padding-top:14px;max-width:1080px;width:100%}
 .congres{margin:28px 0 0}
 .sec-title{font-size:.98rem;font-weight:800;letter-spacing:-.01em;margin:0 0 12px;display:flex;align-items:center;gap:10px}
 .sec-title::before{content:"";width:5px;height:19px;border-radius:3px;background:var(--gold)}
