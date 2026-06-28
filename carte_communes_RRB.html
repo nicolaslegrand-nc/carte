@@ -191,6 +191,13 @@ var PROVCOL={Nord:'#d3322d',Sud:'#1f5fd1',Iles:'#1a9e4a'};
 /* Répartition des sièges (synthèse province) */
 var INSCRITS_PROV={Sud:127474,Nord:43016,Iles:22094};
 var TOTAL_SIEGES={Sud:40,Nord:22,Iles:14};
+/* Sièges forcés — FALLBACK local (secours si le réseau échoue). La valeur à jour est lue
+   AUTOMATIQUEMENT depuis la page Provinces au chargement (voir loadSiegesForces, en bas). Priment sur le calcul auto. */
+var SIEGES_OVERRIDE={
+  'Sud':{'Les Loyalistes - le Rassemblement':28,'Kanaky pour tous':7,'Un autre monde est possible !':5},
+  'Nord':{'UC-FLNKS':10,'UNI':9,'Agissons ensemble pour le Nord':3},
+  'Iles':{'UC-FLNKS Îles':6,'PALIKA Îles':2,'Nation Autochtone':6}
+};
 var TETES={
  "Sud":{"Les Loyalistes - le Rassemblement":"Sonia BACKÈS","Nous, Réunis !":"Philippe DUNOYER","Un espoir pour demain":"Pascal LAFLEUR","Pour une Calédonie française":"Arnold LÈQUES","Unis pour le pays":"Louis MAPOU","France-Calédonie : une patrie":"Alain DESCOMBELS","Kanaky pour tous":"Johanito WAMYTAN","Faire Pays":"Robert KAKUE","Souveraineté Kanaky NC":"Dominique CHAZAL","Une province pour tous":"Walles KOTRA","Un autre monde est possible !":"Milakulo TUKUMULI"},
  "Nord":{"UC-FLNKS":"Pascal SAWA","UNI":"Paul NÉAOUTYINE","Alternative Nord pour un pays souverain":"Eugène MENREMPON","Faire Pays":"Maurice WAKA-AWA","Agissons ensemble pour le Nord":"Vanessa WACAPO"},
@@ -365,6 +372,11 @@ function synthHTML(zone){
   else {
     var withSeats=(zone!=='GN'), seuil=withSeats?Math.ceil(INSCRITS_PROV[prov]*0.05):0;
     var sieges=withSeats?calcSieges(r.parListe,r.total,TOTAL_SIEGES[prov],seuil):null;
+    if(sieges && typeof SIEGES_OVERRIDE!=='undefined' && SIEGES_OVERRIDE[prov]){
+      var ov=SIEGES_OVERRIDE[prov], osum=0;
+      Object.keys(ov).forEach(function(k){osum+=(parseInt(ov[k])||0);});
+      if(osum>0){ sieges={}; Object.keys(ov).forEach(function(k){var v=parseInt(ov[k])||0; if(v>0) sieges[k]=v;}); }
+    }
     var attrib=sieges?Object.keys(sieges).reduce(function(a,k){return a+sieges[k];},0):0;
     var part=r.participation!=null?'<div class="d-part">Participation<b>'+pct(r.participation)+'</b></div>':'';
     var sub=withSeats?'<div class="synth-sub">Sièges : <b>'+attrib+'</b> / '+TOTAL_SIEGES[prov]+' &nbsp;·&nbsp; seuil 5 % : '+num(seuil)+' voix</div>':'';
@@ -468,6 +480,30 @@ function setZone(z){
   else { synth.innerHTML=synthHTML(z); synth.hidden=false; if(hint) hint.style.display='none'; }
 }
 document.getElementById('zoneTabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b)setZone(b.getAttribute('data-zone'));});
+
+/* ---------- Lecture auto des sièges forcés depuis la page Provinces ----------
+   Même domaine (nicolaslegrand-nc.github.io) → pas de blocage CORS.
+   Met à jour SIEGES_OVERRIDE puis rafraîchit la synthèse affichée. En cas d'échec, on garde le fallback local. */
+function refreshSynthAfterSeats(){
+  try{ if(typeof curZone!=='undefined' && curZone && curZone!=='all'){ synth.innerHTML=synthHTML(curZone); } }catch(e){}
+}
+(function loadSiegesForces(){
+  var MAP={sud:'Sud',nord:'Nord',iles:'Iles'};
+  var URL='https://nicolaslegrand-nc.github.io/Provinciales/resultats_3provinces_RRB.html?_='+Date.now();
+  function extractBlock(txt,key){
+    var k=txt.indexOf(key); if(k<0) return null;
+    var b=txt.indexOf('{',k); if(b<0) return null;
+    var d=0; for(var i=b;i<txt.length;i++){var ch=txt[i]; if(ch==='{')d++; else if(ch==='}'){d--; if(d===0) return txt.slice(b,i+1);}}
+    return null;
+  }
+  fetch(URL,{cache:'no-store'}).then(function(r){return r.ok?r.text():Promise.reject(r.status);}).then(function(txt){
+    var blk=extractBlock(txt,'SIEGES_OVERRIDE='); if(!blk) blk=extractBlock(txt,'SIEGES_OVERRIDE'); if(!blk) return;
+    var parsed=(new Function('return ('+blk+')'))();
+    if(!parsed || typeof parsed!=='object') return;
+    var next={}; Object.keys(parsed).forEach(function(p){ next[MAP[p]||p]=parsed[p]; });
+    if(Object.keys(next).length){ SIEGES_OVERRIDE=next; refreshSynthAfterSeats(); }
+  }).catch(function(e){ console.warn('Sièges forcés : lecture Provinces impossible, fallback local utilisé.', e); });
+})();
 
 /* ---------- init ---------- */
 document.getElementById('demoBadge').classList.toggle('hidden',!DONNEES_DEMO);
