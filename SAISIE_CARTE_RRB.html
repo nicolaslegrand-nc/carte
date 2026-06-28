@@ -523,7 +523,8 @@ function renderForm(prov, code){
 
 function readForm(prov, code){
   const listes=listOf(prov);
-  const g=id=>{const el=document.getElementById(id);return el?el.value:'';};
+  const root=document.getElementById('form-'+prov)||document;
+  const g=id=>{const el=root.querySelector('#'+id);return el?el.value:'';};
   const voix={};
   listes.forEach((l,i)=>{const v=parseInt(g('vx-'+i));if(!isNaN(v)&&v>0)voix[l.nom]=v;});
   return {exp:g('exp'),nul:g('nul'),blc:g('blc'),ins:g('ins'),voix:voix};
@@ -549,8 +550,8 @@ function refreshStat(prov, code){
     if(exp>0) html+=` &nbsp;·&nbsp; Exprimés : <b>${num(exp)}</b>`;
     if(ins>0&&votants>0) html+=` &nbsp;·&nbsp; Participation : <b>${(votants/ins*100).toFixed(2).replace('.',',')} %</b>`;
   }
-  const sl=document.getElementById('stat-line'); if(sl) sl.innerHTML=html;
-  const al=document.getElementById('alert-form');
+  const _r=document.getElementById('form-'+prov)||document;const sl=_r.querySelector('#stat-line'); if(sl) sl.innerHTML=html;
+  const al=_r.querySelector('#alert-form');
   if(al){
     if(exp>0&&tv>0&&Math.abs(tv-exp)>exp*0.03)
       al.innerHTML=`<div class="alert warn">⚠️ Total des voix (${num(tv)}) ≠ Exprimés (${num(exp)}) — à vérifier.</div>`;
