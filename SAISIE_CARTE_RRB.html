@@ -604,7 +604,18 @@ async function ghGet(token,user,repo,file){
   catch(e){ throw new Error(e.name==='AbortError'?`Connexion trop lente lors de la lecture de ${file}.`:`Pas de réseau (lecture de ${file}).`); }
   finally{ clearTimeout(t); }
   if(!r.ok) throw new Error(`Impossible de lire ${file} (${r.status}). Vérifie le repo et le token.`);
-  return r.json();
+  const j=await r.json();
+  let html;
+  if(j.content && j.content.replace(/\s/g,'').length){ html=base64ToUtf8(j.content); }
+  else {
+    const dc2=new AbortController(); const dt2=setTimeout(()=>dc2.abort(),20000);
+    let dr; try{ dr=await fetch(j.download_url,{signal:dc2.signal}); }
+    catch(e){ throw new Error(`Lecture du contenu de ${file} impossible (fichier volumineux).`); }
+    finally{ clearTimeout(dt2); }
+    if(!dr.ok) throw new Error(`Lecture du contenu de ${file} impossible (${dr.status}).`);
+    html=await dr.text();
+  }
+  return {sha:j.sha, html:html, content:j.content};
 }
 async function ghPut(token,user,repo,file,contenu,sha){
   const url=`https://api.github.com/repos/${user}/${repo}/contents/${file}`;
@@ -640,7 +651,7 @@ async function publier(){
     const f=await ghGet(token,user,repo,file);
     setStep('read','✅',`${file} lu`,'done');
     setStep('write','<span class="spinner">⏳</span>',`Mise à jour (${nbDone} communes)…`,'running');
-    const html=base64ToUtf8(f.content);
+    const html=f.html;
     if(!/\/\*@VOIX\*\//.test(html)) throw new Error("Le fichier carte ne contient pas le repère d'injection (/*@VOIX*/). Republie la bonne version de la carte.");
     const neu=injectCarte(html, voix);
     const res=await ghPut(token,user,repo,file,neu,f.sha);
